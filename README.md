@@ -23,3 +23,4 @@ learning_rate=0.001,
 batch size = 100,
 iterations = 60000 }
 
+accuracy = 58%
