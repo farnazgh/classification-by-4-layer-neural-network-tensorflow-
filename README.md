@@ -4,6 +4,7 @@ Data: movie reviews https://github.com/abromberg/sentiment_analysis_python/tree/
 
 polarity of 1-gram words http://sentistrength.wlv.ac.uk/documentation/language_changes.html
 
+
 five layer network : 
 
 --input layer - four nodes (the total polarity of positive words, the total polarity of neg words, the total number of pos words, the total number of neg words) 
@@ -11,6 +12,7 @@ five layer network :
 --hidden layers - the number of nodes in these layers regarding to the efficiency of network can be changed 
 
 --output layer - two nodes 
+
 
 
 features {
