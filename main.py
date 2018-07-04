@@ -9,69 +9,55 @@ import numpy as np
 # data preparation
 # =================================================================
 
-# load words polarity
-words_polarity = {}
-with open("data\Sentiment\EmotionLookupTable.txt", "r") as ins:
+age = -1
+workclass = {"?":0, "Private":1, "Self-emp-not-inc":2, "Self-emp-inc":3, "Federal-gov":4, "Local-gov":5, "State-gov":6, "Without-pay":7, "Never-worked":8}
+fnlwgt = -1
+education = {"?":0,"Bachelors":1, "Some-college":2, "11th":3, "HS-grad":4, "Prof-school":5, "Assoc-acdm":6, "Assoc-voc":7, "9th":8, "7th-8th":9, "12th":10, "Masters":11, "1st-4th":12, "10th":13, "Doctorate":14, "5th-6th":15, "Preschool":16}
+education_num = -1
+marital_status = {"?":0,"Married-civ-spouse":1, "Divorced":2, "Never-married":3, "Separated":4, "Widowed":5, "Married-spouse-absent":6, "Married-AF-spouse":7}
+occupation = {"?":0,"Tech-support":1, "Craft-repair":2, "Other-service":3, "Sales":4, "Exec-managerial":5, "Prof-specialty":6, "Handlers-cleaners":7, "Machine-op-inspct":8, "Adm-clerical":9, "Farming-fishing":10, "Transport-moving":11, "Priv-house-serv":12, "Protective-serv":13, "Armed-Forces":14}
+relationship = {"?":0,"?":0,"Wife":1, "Own-child":2, "Husband":3, "Not-in-family":4, "Other-relative":5, "Unmarried":6}
+race = {"?":0,"White":1, "Asian-Pac-Islander":2, "Amer-Indian-Eskimo":3, "Other":4, "Black":5}
+sex = {"?":0,"Female":1, "Male":2}
+capital_gain= -1
+capital_loss = -1
+hours_per_week = -1
+native_country ={"?":0,"United-States":1, "Cambodia":2, "England":3, "Puerto-Rico":4, "Canada":5, "Germany":6, "Outlying-US(Guam-USVI-etc)":7, "India":8, "Japan":9, "Greece":10, "South":11, "China":12, "Cuba":13, "Iran":14, "Honduras":15, "Philippines":16, "Italy":17, "Poland":18, "Jamaica":19, "Vietnam":20, "Mexico":21, "Portugal":22, "Ireland":23, "France":24, "Dominican-Republic":25, "Laos":26, "Ecuador":27, "Taiwan":28, "Haiti":29, "Columbia":30, "Hungary":31, "Guatemala":32, "Nicaragua":33, "Scotland":34, "Thailand":35, "Yugoslavia":36, "El-Salvador":37, "Trinadad&Tobago":38, "Peru":39, "Hong":40, "Holand-Netherlands":41}
+# income = {"<=50K":0, ">50K":1}
+
+X = []
+Y = []
+with open("data\income\data.txt", "r") as ins:
     for line in ins:
-        items = line.split()
-        word = items[0]
-        word = word.replace('*','')
-
-        score = int(items[1])
-
-        words_polarity[word] = score
+        l = []
+        line = line.replace("\n","")
+        items = line.split(", ")
 
 
-#load dataset
-def line_to_features(line):
-
-    words = line.split()
-
-    total_pos_score = 0
-    total_neg_score = 0
-
-    count_pos_words = 0
-    count_neg_words = 0
-
-    for w in words:
-        if w in words_polarity:
-            score = words_polarity[w]
-            if score>0:
-                total_pos_score += score
-                count_pos_words +=1
-            else:
-                total_neg_score += (-1*score)
-                count_neg_words +=1
-
-    return [total_pos_score, total_neg_score, count_pos_words, count_neg_words ]
+        l.append(int(items[0]) if items[0]!="?" else 0) #age
+        l.append(workclass.get(items[1])) #workclass
+        l.append(int(items[2]) if items[2]!="?" else 0) #fnlwgt
+        l.append(education.get(items[3])) #education
+        l.append(int(items[4]) if items[4]!="?" else 0) #education_num
+        l.append(marital_status.get(items[5])) #marital_status
+        l.append(occupation.get(items[6])) #occupation
+        l.append(relationship.get(items[7])) #relationship
+        l.append(race.get(items[8])) #race
+        l.append(sex.get(items[9])) #sex
+        l.append(int(items[10]) if items[10]!="?" else 0) #capital_gain
+        l.append(int(items[11]) if items[11]!="?" else 0) #capital_loss
+        l.append(int(items[12]) if items[12]!="?" else 0) #hours_per_week
+        l.append(native_country.get(items[13])) #native_country
+        
+        X.append(l)
+        Y.append([1,0] if items[14]=="<=50K" else [0,1])
 
 
-
-
-
-X_pos=[]
-Y_pos=[]
-X_neg=[]
-Y_neg=[]
-
-with open("data\Sentiment\pos.txt", "r") as ins:
-    for line in ins:
-        X_pos.append(line_to_features(line));
-        Y_pos.append([1,0]);
-
-
-with open("data/Sentiment/neg.txt", "r") as ins:
-    for line in ins:
-        X_neg.append(line_to_features(line));
-        Y_neg.append([0,1]);
-
-
-
-index = int(len(Y_pos)*0.8)
-x_train = np.array( X_pos[0:index] + X_neg[0:index] )
-y_train = np.array( Y_pos[0:index] + Y_neg[0:index] )
-x_test = np.array( X_pos[index:len(X_pos)] + X_neg[index:len(X_neg)] )
-y_test = np.array( Y_pos[index:len(Y_pos)] + Y_neg[index:len(Y_neg)] )
+index = int(len(Y)*0.8)
+x_train = np.array( X[0:index])
+y_train = np.array( Y[0:index])
+x_test = np.array( X[index:len(X)])
+y_test = np.array( Y[index:len(Y)])
 y_test_cls = np.array([label.argmin() for label in y_test ])
 
 
@@ -80,23 +66,16 @@ print("- Training-set:\t\t{}".format(len(y_train)))
 print("- Test-set:\t\t{}".format(len(y_test)))
 print("- Test-set-cls:\t\t{}".format(len(y_test_cls)))
 
-
-
-
-
-
-
-
 # model
 # =================================================================
 
 tf.reset_default_graph()
 
 # num nodes
-input_layer_nodes = 4
-hidden_layer_nodes1 = 10
-hidden_layer_nodes2 = 10
-hidden_layer_nodes3 = 10
+input_layer_nodes = 14
+hidden_layer_nodes1 = 7
+# hidden_layer_nodes2 = 4
+hidden_layer_nodes3 = 3
 output_layer_nodes = 2
 
 
@@ -115,16 +94,16 @@ activations_hidden1 = tf.nn.relu(preactivations_hidden1)
 
 # hidden layer2
 
-weights_hidden2 = tf.Variable(tf.random_normal([hidden_layer_nodes1, hidden_layer_nodes2]))
-bias_hidden2 = tf.Variable(tf.random_normal([hidden_layer_nodes2]))
-preactivations_hidden2 = tf.add(tf.matmul(activations_hidden1, weights_hidden2), bias_hidden2)
-activations_hidden2 = tf.nn.relu(preactivations_hidden2)
+# weights_hidden2 = tf.Variable(tf.random_normal([hidden_layer_nodes1, hidden_layer_nodes2]))
+# bias_hidden2 = tf.Variable(tf.random_normal([hidden_layer_nodes2]))
+# preactivations_hidden2 = tf.add(tf.matmul(activations_hidden1, weights_hidden2), bias_hidden2)
+# activations_hidden2 = tf.nn.relu(preactivations_hidden2)
 
 # hidden layer3
 
-weights_hidden3 = tf.Variable(tf.random_normal([hidden_layer_nodes2, hidden_layer_nodes3]))
+weights_hidden3 = tf.Variable(tf.random_normal([hidden_layer_nodes1, hidden_layer_nodes3]))
 bias_hidden3 = tf.Variable(tf.random_normal([hidden_layer_nodes3]))
-preactivations_hidden3 = tf.add(tf.matmul(activations_hidden2, weights_hidden3), bias_hidden3)
+preactivations_hidden3 = tf.add(tf.matmul(activations_hidden1, weights_hidden3), bias_hidden3)
 activations_hidden3 = tf.nn.relu(preactivations_hidden3)
 
 # output layer
