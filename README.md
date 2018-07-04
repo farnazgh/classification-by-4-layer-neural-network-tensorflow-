@@ -1,8 +1,10 @@
 # income classification by 4 layer neural network (tensorflow)
 
-Data: movie reviews https://github.com/abromberg/sentiment_analysis_python/tree/master/polarityData 
+Prediction task is to determine whether a person makes over 50K a year
 
-polarity of 1-gram words http://sentistrength.wlv.ac.uk/documentation/language_changes.html
+
+Data: https://archive.ics.uci.edu/ml/datasets/Adult
+	
 
 
 four layer feedforwarding neural network : 
