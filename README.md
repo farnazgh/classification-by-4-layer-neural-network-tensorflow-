@@ -1,4 +1,4 @@
-# sentiment-analysis-tensorflow-
+# income classification by 4 layer neural network (tensorflow)
 
 Data: movie reviews https://github.com/abromberg/sentiment_analysis_python/tree/master/polarityData 
 
