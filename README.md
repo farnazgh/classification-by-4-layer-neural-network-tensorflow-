@@ -1,4 +1,4 @@
-# income classification by 4 layer neural network (tensorflow)
+# Classification by 4 layer neural network (tensorflow)
 
 Prediction task is to determine whether a person makes over 50K a year
 
